@@ -36,20 +36,14 @@ namespace Mango.Services.ProductAPI.Repository
 
         public async Task<bool> DeleteProduct(int id)
         {
-            try
-            {
-                Product prod = await _db.Products.SingleOrDefaultAsync(x => x.ProductId== id);
-                if (prod != null) throw new Exception();
+            
+            Product prod = await _db.Products.SingleOrDefaultAsync(x => x.ProductId== id);
+            if (prod != null) throw new Exception();
                 
-                _db.Products.Remove(prod);
-                _db.SaveChanges();
+            _db.Products.Remove(prod);
+            _db.SaveChanges();
 
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return true;
         }
 
         public async Task<ProductDto> GetProductById(int id)
