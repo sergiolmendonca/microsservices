@@ -26,7 +26,8 @@ namespace Mango.Web.Services
                 message.RequestUri = new Uri(apiRequest.Url);
                 client.DefaultRequestHeaders.Clear();
 
-                if (apiRequest.Data is null) throw new Exception("The sending Data is Empty.");
+                if (apiRequest.Data is null && 
+                    (apiRequest.ApiType.Equals(SD.ApiType.POST) || apiRequest.ApiType.Equals(SD.ApiType.PUT))) throw new Exception("The sending Data is Empty.");
 
                 message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data), 
                     Encoding.UTF8, "application/json");
