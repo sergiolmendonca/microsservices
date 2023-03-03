@@ -3,6 +3,7 @@ using Mango.Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Mango.Web.Controllers
 {
@@ -40,6 +41,37 @@ namespace Mango.Web.Controllers
             if (ModelState.IsValid)
             {
                 var response = await _productService.CreateProductAsync<ResponseDto>(model);
+
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            ProductDto product = new();
+            var response = await _productService.GetProductByIdAsync<ResponseDto>(id);
+
+            if (response != null && response.IsSuccess)
+            {
+                product = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
+                return View(product);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(ProductDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _productService.UpdateProductAsync<ResponseDto>(model);
 
                 if (response != null && response.IsSuccess)
                 {
