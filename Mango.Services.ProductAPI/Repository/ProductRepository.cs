@@ -38,7 +38,7 @@ namespace Mango.Services.ProductAPI.Repository
         {
             
             Product prod = await _db.Products.SingleOrDefaultAsync(x => x.ProductId== id);
-            if (prod != null) throw new Exception();
+            if (prod == null) throw new Exception();
                 
             _db.Products.Remove(prod);
             _db.SaveChanges();
