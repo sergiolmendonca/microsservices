@@ -1,5 +1,6 @@
 using Mango.Services.Identity;
 using Mango.Services.Identity.DbContexts;
+using Mango.Services.Identity.Initializer;
 using Mango.Services.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,8 @@ var identityBuilder = builder.Services.AddIdentityServer(options =>
 
 identityBuilder.AddDeveloperSigningCredential();
 
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,6 +44,11 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
+    var dbInitializer = app.Services.CreateScope()
+        .ServiceProvider.GetRequiredService<IDbInitializer>();
+    dbInitializer.Initialize();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
